@@ -1,0 +1,41 @@
+Package: studydashboard
+Type: Package
+Title: Studydashboard: A Package Containing the Studydashboard
+Description: This package provides functions to launch and maintain the studydashboard application. The main focus of this application lies on the visualisation of earned so called Credit Points in the European Credit Transfer System (in short ECTSCP) over the course of students’ studies. For this we offer a user interace which makes it user-friendly to produce such graphics.
+Version: 1.0.0
+Authors@R: 
+  c(person(given = "Jonathan",
+           family = "Berrisch",
+           role = c("aut", "cre"),
+           email = "jonathan.berrisch@stud.uni-due.de"),
+    person(given = "Fiona",
+           family = "Ewald",
+           role = "aut"),
+    person(given = "Timo",
+           family = "Rammert",
+           role = "aut"))
+License: CC0
+Encoding: UTF-8
+LazyData: true
+Imports:
+    shiny,
+    shinydashboard,
+    shinyWidgets,
+    shinyjs,
+    pool,
+    RSQLite,
+    tools,
+    shiny.i18n,
+    cowplot, 
+    ggplot2,
+    tibble,
+    forcats,
+    dplyr,
+    purrr,
+    tidyr,
+    stringr,
+    magrittr,
+    DT
+Suggests:
+    rstudioapi
+RoxygenNote: 7.1.0
