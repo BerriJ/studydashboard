@@ -232,7 +232,7 @@ launchApp <- function(){
     output$num_graduates_heading <- renderText(i18n()$t("Number of Graduates per Semester"))
     output$exams_per_semester_heading <- renderText(i18n()$t("Number of Exams per Semester of Examination"))
     output$cum_credits_heading <- renderText(i18n()$t("Number of Credits earned per Academic Semester"))
-    output$credits_per_student_heading <- renderText(i18n()$t("Average of earned Credits per Academic Semester"))
+    output$credits_per_student_heading <- renderText(i18n()$t("Average of earned Credits per Semester"))
     output$number_of_attempts_heading <- renderText(i18n()$t("Average Number of Attempts per Exam"))
     output$exams_semester_heading <- renderText(i18n()$t("Distribution of Academic Semesters in which Students have taken the Exam"))
     output$study_length_heading <- renderText(i18n()$t("Distribution of Number of Students over the total Number of Semesters enrolled"))
@@ -1242,17 +1242,18 @@ launchApp <- function(){
         purrr::map(function(x){
           x %>%
             select(Student.Pseudonym, Pruefungssemester, verbuchteECTSCP) %>%
+            group_by(Pruefungssemester, Student.Pseudonym) %>%
+            summarise(cp_sum = sum(verbuchteECTSCP, na.rm = TRUE)) %>%
             group_by(Pruefungssemester) %>%
-            summarise(count = n(), cp_sum = sum(verbuchteECTSCP, na.rm = TRUE)) %>%
-            mutate(count = cp_sum / count,
-                   cp_sum = NULL, Pruefungssemester = forcats::as_factor(Pruefungssemester))
+            summarise(mean_cp = mean(cp_sum)) %>%
+            mutate(Pruefungssemester = forcats::as_factor(Pruefungssemester))
         }) %>%
         purrr::reduce(full_join, by = "Pruefungssemester", suffix = c(input$datset_pruefung,
                                                                       c(input$compare_pruefung_cp_per_student_plot))) %>%
-        tidyr::pivot_longer(-Pruefungssemester, names_to = "Studiengang", names_prefix = "count",
-                            values_to = "count") %>%
+        tidyr::pivot_longer(-Pruefungssemester, names_to = "Studiengang", names_prefix = "mean_cp",
+                            values_to = "mean_cp") %>%
         tidyr::drop_na() %>%
-        ggplot(aes(x = Pruefungssemester, y = count,
+        ggplot(aes(x = Pruefungssemester, y = mean_cp,
                    fill = switch((length(c(input$datset_pruefung,
                                            c(input$compare_pruefung_cp_per_student_plot))) == 1) + 2,
                                  NULL, Studiengang))) +
@@ -1261,7 +1262,7 @@ launchApp <- function(){
         theme(text = element_text(size=25)) +
         theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
         labs(fill = i18n()$t("Study Programme"))  +
-        xlab(i18n()$t("Academic Semester")) +
+        xlab(i18n()$t("Semester of Examination")) +
         ylab(i18n()$t("Avg. of earned Credits"))
     )
 
@@ -1279,26 +1280,27 @@ launchApp <- function(){
         purrr::map(function(x){
           x %>%
             select(Student.Pseudonym, Pruefungssemester, verbuchteECTSCP) %>%
+            group_by(Pruefungssemester, Student.Pseudonym) %>%
+            summarise(cp_sum = sum(verbuchteECTSCP, na.rm = TRUE)) %>%
             group_by(Pruefungssemester) %>%
-            summarise(count = n(), cp_sum = sum(verbuchteECTSCP, na.rm = TRUE)) %>%
-            mutate(count = cp_sum / count,
-                   cp_sum = NULL, Pruefungssemester = forcats::as_factor(Pruefungssemester))
+            summarise(mean_cp = mean(cp_sum)) %>%
+            mutate(Pruefungssemester = forcats::as_factor(Pruefungssemester))
         }) %>%
         purrr::reduce(full_join, by = "Pruefungssemester", suffix = c(input$datset_pruefung,
                                                                       c(input$compare_pruefung_cp_per_student_plot))) %>%
-        tidyr::pivot_longer(-Pruefungssemester, names_to = "Studiengang", names_prefix = "count",
-                            values_to = "count") %>%
+        tidyr::pivot_longer(-Pruefungssemester, names_to = "Studiengang", names_prefix = "mean_cp",
+                            values_to = "mean_cp") %>%
         tidyr::drop_na() %>%
-        ggplot(aes(x = Pruefungssemester, y = count,
+        ggplot(aes(x = Pruefungssemester, y = mean_cp,
                    fill = switch((length(c(input$datset_pruefung,
                                            c(input$compare_pruefung_cp_per_student_plot))) == 1) + 2,
                                  NULL, Studiengang))) +
         geom_bar(position = "dodge", stat = "identity") +
         cowplot::theme_cowplot() +
-        theme(text = element_text(size=25),
-              axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+        theme(text = element_text(size=25)) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
         labs(fill = i18n()$t("Study Programme"))  +
-        xlab(i18n()$t("Academic Semester")) +
+        xlab(i18n()$t("Semester of Examination")) +
         ylab(i18n()$t("Avg. of earned Credits"))
     }
 

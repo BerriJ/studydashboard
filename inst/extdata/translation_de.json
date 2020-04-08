@@ -8,7 +8,7 @@
 	  {"en": "Avg. No. of Attempts", "de": "Durschn. Anzahl der Versuche"},
 	  {"en": "Average Number of Attempts per Exam", "de": "Durschnittliche Anzahl der Versuche je Prüfung"},
       {"en": "Avg. of earned Credits", "de": "Durchschn. erworbene Credits"},
-	  {"en": "Average of earned Credits per Academic Semester", "de": "Durchschnittlich erworbene Credits je Fachsemester"},
+	  {"en": "Average of earned Credits per Semester", "de": "Durchschnittlich erworbene Credits je Semester"},
 	  {"en": "Browse...", "de": "Durchsuchen..."},
 	  {"en": "Choose file to upload", "de": "Datei zum Hochladen auswählen:"},
       {"en": "Choose a dataset:", "de": "Dateipfad zum Datensatz"},
